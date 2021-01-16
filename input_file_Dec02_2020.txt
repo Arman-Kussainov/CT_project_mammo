@@ -1,0 +1,185 @@
+path.mu.data:Attenuation coefficients\\NIST compounds\\
+path.spectrum.data:100kV.txt
+path.projection.data:C:\\CT_project\\projections\\
+
+mammography.no
+projections.no
+
+element.id:Vacuum.0
+element.id:Air, Dry.1
+element.id:Water, Liquid.2
+element.id:Water, Liquid.3
+element.id:Water, Liquid.4
+element.id:Water, Liquid.5
+element.id:Water, Liquid.6
+element.id:Water, Liquid.7
+element.id:Water, Liquid.8
+element.id:Water, Liquid.9
+element.id:Water, Liquid.10
+element.id:Water, Liquid.11
+
+source.to.phantom:10000
+source.elevation:0
+phantom.to.detector:5040
+
+field.of.view:800
+slice.plane:XY
+target.cross.section:600
+slice.half.thickness:0
+zero.padding.factor:0
+cut.background:0.0
+tukey.window.alpha:0.0
+
+detector.width:2560
+detector.height:2560
+
+start.angle:0 // from lesser number to bigger one
+end.angle:230
+projections.number:116
+image.compression:9
+
+voxels.per.cm:72
+
+gauss.blur.kernel:11 // should be ODD!!
+
+a.multiplier:0.10
+gauss.noise.mean:0
+gauss.noise.sigma:5
+
+phantom.width:1024
+phantom.depth:1024
+phantom.height:1024
+
+phantom.id:1
+
+chamber.id:1
+
+save.phantom.no
+
+defects.quantity:0
+defects.id:0
+
+voids.quantity:0
+voids.id:0
+
+object.shape:0 
+ object.x:512 
+ object.y:512
+ object.z:512 
+object.width:707
+object.depth:942
+object.height:922
+ object.alpha:0
+ object.beta:0
+ object.gamma:0
+object.id:2
+
+object.shape:0 
+ object.x:512 
+ object.y:512
+ object.z:512 
+object.width:678
+object.depth:895
+object.height:901
+ object.alpha:0
+ object.beta:0
+ object.gamma:0
+object.id:3
+
+object.shape:0 
+ object.x:399 
+ object.y:512
+ object.z:384 
+object.width:420
+object.depth:164
+object.height:215
+ object.alpha:0
+ object.beta:0
+ object.gamma:108
+object.id:4
+
+object.shape:0 
+ object.x:625 
+ object.y:512
+ object.z:384 
+object.width:317
+object.depth:113
+object.height:225
+ object.alpha:0
+ object.beta:0
+ object.gamma:72
+object.id:5
+
+object.shape:0 
+ object.x:512 
+ object.y:691
+ object.z:384 
+object.width:215
+object.depth:256
+object.height:512
+ object.alpha:0
+ object.beta:0
+ object.gamma:0
+object.id:6
+
+object.shape:0 
+ object.x:512 
+ object.y:563
+ object.z:384 
+object.width:47
+object.depth:47
+object.height:47
+ object.alpha:0
+ object.beta:0
+ object.gamma:0
+object.id:7
+
+object.shape:0 
+ object.x:471 
+ object.y:179
+ object.z:384 
+object.width:47
+object.depth:24
+object.height:20
+ object.alpha:0
+ object.beta:0
+ object.gamma:0
+object.id:8
+
+object.shape:0 
+ object.x:543 
+ object.y:179
+ object.z:384 
+object.width:47
+object.depth:24
+object.height:20
+ object.alpha:0
+ object.beta:0
+ object.gamma:90
+object.id:9
+
+object.shape:0 
+ object.x:543 
+ object.y:458
+ object.z:832 
+object.width:57
+object.depth:41
+object.height:102
+ object.alpha:0
+ object.beta:0
+ object.gamma:90
+object.id:10
+
+object.shape:0 
+ object.x:512 
+ object.y:563
+ object.z:832 
+object.width:57
+object.depth:57
+object.height:102
+ object.alpha:0
+ object.beta:0
+ object.gamma:0
+object.id:11
+
+

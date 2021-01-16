@@ -1,0 +1,79 @@
+path.mu.data:Attenuation coefficients\\NIST compounds\\
+path.spectrum.data:100kV.txt
+path.projection.data:C:\\CT_project\\mammography\\
+
+mammography.yes
+projections.yes
+
+element.id:Vacuum.0
+element.id:Air, Dry.1
+element.id:Water, Liquid.2
+element.id:Adipose Tissue.3
+
+source.to.phantom:2000
+source.elevation:0
+phantom.to.detector:128
+
+field.of.view:512
+slice.plane:YZ
+target.cross.section:300
+slice.half.thickness:0
+zero.padding.factor:0
+cut.background:0.0
+tukey.window.alpha:0.0
+
+detector.width:1024
+detector.height:1024
+
+start.angle:-90 // from lesser number to bigger one
+end.angle:90
+projections.number:181
+image.compression:9
+
+voxels.per.cm:72
+
+gauss.blur.kernel:11 // should be ODD!!
+
+a.multiplier:0.10
+gauss.noise.mean:0
+gauss.noise.sigma:5
+
+phantom.width:256
+phantom.depth:256
+phantom.height:256
+
+phantom.id:2
+
+chamber.id:1
+
+save.phantom.no
+
+defects.quantity:0
+defects.id:0
+
+voids.quantity:0
+voids.id:0
+
+object.shape:0 
+ object.x:0 
+ object.y:0
+ object.z:0 
+object.width:512
+object.depth:512
+object.height:512
+ object.alpha:0
+ object.beta:0
+ object.gamma:0
+object.id:0
+
+object.shape:0 
+ object.x:200 
+ object.y:200
+ object.z:200 
+object.width:100
+object.depth:100
+object.height:100
+ object.alpha:0
+ object.beta:0
+ object.gamma:0
+object.id:0

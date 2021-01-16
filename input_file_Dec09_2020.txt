@@ -1,0 +1,79 @@
+path.mu.data:Attenuation coefficients\\NIST compounds\\
+path.spectrum.data:100kV.txt
+path.projection.data:C:\\CT_project\\projections1\\
+
+mammography.no
+projections.yes
+
+element.id:Vacuum.0
+element.id:Air, Dry.1
+element.id:Water, Liquid.2
+element.id:Water, Liquid.3
+
+source.to.phantom:2000
+source.elevation:0
+phantom.to.detector:1040
+
+field.of.view:512
+slice.plane:XY
+target.cross.section:200
+slice.half.thickness:0
+zero.padding.factor:0
+cut.background:0.0
+tukey.window.alpha:0.0
+
+detector.width:1024
+detector.height:1024
+
+start.angle:0 // from lesser number to bigger one
+end.angle:360
+projections.number:180
+image.compression:9
+
+voxels.per.cm:72
+
+gauss.blur.kernel:11 // should be ODD!!
+
+a.multiplier:0.10
+gauss.noise.mean:0
+gauss.noise.sigma:5
+
+phantom.width:512
+phantom.depth:512
+phantom.height:512
+
+phantom.id:2
+
+chamber.id:1
+
+save.phantom.no
+
+defects.quantity:0
+defects.id:0
+
+voids.quantity:0
+voids.id:0
+
+object.shape:0 
+ object.x:64 
+ object.y:64
+ object.z:33 
+object.width:45
+object.depth:39
+object.height:43
+ object.alpha:0
+ object.beta:0
+ object.gamma:0
+object.id:2
+
+object.shape:1 
+ object.x:0 
+ object.y:0
+ object.z:0 
+object.width:10
+object.depth:10
+object.height:10
+ object.alpha:0
+ object.beta:0
+ object.gamma:0
+object.id:3
