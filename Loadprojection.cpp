@@ -364,6 +364,44 @@ void Loadprojection::load_images() {
 			}
 		}
 
+// January 18, 2021. Clone old solution for the "YZ" plane to the other planes
+
+		if ((mammo == 1) && (a_ffix == "XY")) {
+
+			float source_to_detector_center = static_cast<float>(-y_source + y_detector);
+			// в случае маммографии, старые переменные приобретают новый смысл и меняются с каждым шагом по углу
+			
+			// January 18, 2021 Угол теперь соответствует движению источника по дуге вокруг объекта
+			// January 18, 2021 ... может тогда не нужно обращать знак минус у синуса и косинуса? см. ниже))
+			
+			// возвышения источника. Также, для маммографии, нам нужны положительные углы s_in -> (-s_in)
+			float sourcetophantom = source_to_detector_center*c_os - static_cast<float>(y_detector);
+			float sourceelevation = source_to_detector_center*(-s_in);
+			float source_to_detector = source_to_detector_center*cos(view_angle);
+
+			// распараллеливание процесса обратного проецирования
+			for (int Xt = t_arget - d_elta; Xt <= t_arget + d_elta; Xt++) {
+				float Xp = static_cast<float>(Xt) - half_slice;
+
+#pragma omp parallel for
+				for (int Yt = 0; Yt < slice_size; Yt++) {
+					float Yp = static_cast<float>(Yt) - half_slice;
+					int ci = static_cast<int>(Xp*source_to_detector / (sourcetophantom + Yp) + static_cast<float>(w_detector) / 2.0);
+
+					for (int Zt = 0; Zt < slice_size; Zt++) {
+						float Zp = static_cast<float>(Zt) - half_slice;
+						int ck = static_cast<int>(sourceelevation - (sourceelevation - Zp)*source_to_detector / (sourcetophantom + Yp)
+							+ static_cast<float>(h_detector) / 2.0);
+
+						if ((ck >= 0) && (ck < h_detector) && (ci >= 0) && (ci < w_detector)) {
+							slice.at<float>(Zt, Yt) += c_onvolved.at<float>(h_detector - 1 - ck, w_detector - 1 - ci);
+						}
+
+					}
+				}
+			}
+		}
+
 // для трех различных типов проекций используем свой блок комманд
 // ограничивающих выборку координат X,Y,Z с их переводом в координаты
 // проецируемых пикселей ci и ck рентгеновских проекций
