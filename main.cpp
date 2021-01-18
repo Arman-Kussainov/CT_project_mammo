@@ -848,5 +848,3 @@ int main() {
 
 		std::cout << "done!\n";
 	}
-
-	// clear
