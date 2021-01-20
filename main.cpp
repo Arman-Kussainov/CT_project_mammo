@@ -785,7 +785,7 @@ int main() {
 
 		float t_before = 0, t_after = 1.0;
 		int m_amo = 0;
-
+		// Phantom tracng and creating the projections
 		for (float d_egree = start_angle; d_egree <= end_angle; d_egree += degree_step) {
 			if (mammography_yes == 0) {
 				// обрезаем часть пространство не содержащего фантом и не нуждающеося в пошаговой трассировке, см. ниже
@@ -801,9 +801,9 @@ int main() {
 			else {
 				m_amo = 1;
 				// режим мамографии. Детектор вплотную придвинут к фантому и источник двигается по дуге окружности
-
-				// phantom_to_detector = static_cast<int>(depth / 2.0f) + 1; // move one voxel further from the detector
-
+				// режим мамографии. Детектор вплотную придвинут к фантому и источник двигается по дуге окружности
+				phantom_to_detector = static_cast<int>(depth / 2.0f) + 1; // move one voxel further from the detector
+				cout << "\nThe phantom.to.detector value is set to 1/2 (half) of the phantom.depth and equals to " << phantom_to_detector << "\n";
 				// в случае маммографии, старые переменные приобретают новый смысл и меняются с каждым шагом по углу
 				// возвышения источника
 
@@ -827,14 +827,19 @@ int main() {
 		delete[] interpolated_mudata;
 	}
 
+	// these calculations were implemented for each slice in Loadprojection.cpp block
 	//if(mammography_yes==1){
-		// режим мамографии. Детектор вплотную придвинут к фантому и источник двигается по дуге окружности
-		// с центром в центре детектора
+	//	// режим мамографии. Детектор вплотную придвинут к фантому и источник двигается по дуге окружности
+	//	// с центром в центре детектора
 	//	float source_to_detector_center = static_cast<float>(source_to_phantom + phantom_to_detector);
 	//	int sourcetophantom = static_cast<int>(source_to_detector_center*cos(d_egree*pi / 180.0f) - phantom_to_detector);
 	//	int sourceelevation = static_cast<int>(source_to_detector_center*sin(d_egree*pi / 180.0f));
 	//}
-
+	if (mammography_yes == 1) {
+	    // режим мамографии. Детектор вплотную придвинут к фантому и источник двигается по дуге окружности
+		phantom_to_detector = static_cast<int>(depth / 2.0f) + 1; // move one voxel further from the detector
+		cout << "\nThe phantom.to.detector value is set to 1/2 (half) of the phantom.depth" << phantom_to_detector << "\n";
+	}
 		// процедура обратного проецирования проекций по заданым парметрам в input_file.txt
 		cout << "\nproceeding to the supplied projections files ...\n";
 		//for (int tcs = 190; tcs <= 200;tcs+=1) {

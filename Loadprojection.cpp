@@ -10,24 +10,24 @@ Loadprojection::Loadprojection(int ysource, int ydetector, int wdetector, int hd
 	float startangle, float endangle, int F_OV, string slice_plane, int target_cross_section, int slice_half_thickness, int zero_padding_factor,
 	float cutbackground, float tukeywindowalpha,
 	int projectionsnumber, string projections_path, int m_ammo) {
-	y_source = ysource;	
+	y_source = ysource;
 	y_detector = ydetector;
 	w_detector = wdetector; h_detector = hdetector;
 	projections_number = projectionsnumber;
 	slice_size = F_OV;
-	a_ffix=slice_plane;
-	t_arget = target_cross_section; 
-	d_elta=slice_half_thickness;
+	a_ffix = slice_plane;
+	t_arget = target_cross_section;
+	d_elta = slice_half_thickness;
 	times_n = zero_padding_factor;
 	cut_background = cutbackground;
-	tukey_window_alpha=tukeywindowalpha;
+	tukey_window_alpha = tukeywindowalpha;
 	read_projections_from = projections_path;
 	start_angle = startangle;
 	end_angle = endangle;
 	mammo = m_ammo;
 }
 
-Loadprojection::~Loadprojection(){}
+Loadprojection::~Loadprojection() {}
 // Функция перестановки левой и правой части матриц
 
 Mat swapLR(Mat complex)
@@ -52,16 +52,17 @@ Mat compute_rowDFT(Mat image) {
 	Mat complex;
 	merge(planes, 2, complex);
 	// Фурье преобразование 
-	dft(complex, complex, DFT_ROWS|DFT_COMPLEX_OUTPUT);
+	dft(complex, complex, DFT_ROWS | DFT_COMPLEX_OUTPUT);
 	return complex;
 }
 
 // функция "дозабивания" нулями
 Mat pad_zeros(Mat image, int zeros_pad) {
 	Mat padded;
-	int m = 0, n = 0, d_ff = zeros_pad- image.cols;
-	if (d_ff % 2 == 0) { 
-		m = d_ff / 2; n = d_ff / 2;}
+	int m = 0, n = 0, d_ff = zeros_pad - image.cols;
+	if (d_ff % 2 == 0) {
+		m = d_ff / 2; n = d_ff / 2;
+	}
 	else { m = d_ff / 2; n = m + 1; }
 	// create output image of optimal size
 	//copyMakeBorder( src, dst, top, bottom, left, right, borderType, value );
@@ -70,7 +71,7 @@ Mat pad_zeros(Mat image, int zeros_pad) {
 }
 
 Mat crop_zeros(Mat image, int fit_size) {
-	int m = 0, n = 0, d_ff = image.cols-fit_size;
+	int m = 0, n = 0, d_ff = image.cols - fit_size;
 	if (d_ff % 2 == 0) {
 		m = d_ff / 2; n = d_ff / 2;
 	}
@@ -84,8 +85,8 @@ Mat inverse_rowDFT(Mat complex)
 { // CHECK OUT THE SCALLING!!!!
 	Mat work;
 	// normalization for inverse Fourier transform
-	cv::divide(complex, complex.cols, complex); 
-	dft(complex, work, DFT_ROWS|DFT_INVERSE|DFT_COMPLEX_OUTPUT);
+	cv::divide(complex, complex.cols, complex);
+	dft(complex, work, DFT_ROWS | DFT_INVERSE | DFT_COMPLEX_OUTPUT);
 	Mat planes[] = { Mat::zeros(complex.size(), CV_32F), Mat::zeros(complex.size(), CV_32F) };
 	split(work, planes);                // planes[0] = Re(DFT(I)), planes[1] = Im(DFT(I))
 	//magnitude(planes[0], planes[1], work);    // === sqrt(Re(DFT(I))^2 + Im(DFT(I))^2)
@@ -182,15 +183,15 @@ void Loadprojection::load_images() {
 
 				int half_dist = static_cast<int>(float(min_dim) / 2.0f);
 				if (dist_to_cntr <= half_dist) {
-					Tukey_filter.at<float>(ck, ci) = T_ukey[half_dist-dist_to_cntr];
+					Tukey_filter.at<float>(ck, ci) = T_ukey[half_dist - dist_to_cntr];
 				}
-			} 
+			}
 		}
 	}
 	else { Tukey_filter = Scalar::all(1); }
 
-// Считаем значения элементов фильтра g_na в действительном пространстве
-// а фильтр h_ann в пространстве частот Фурье
+	// Считаем значения элементов фильтра g_na в действительном пространстве
+	// а фильтр h_ann в пространстве частот Фурье
 	int center_point = static_cast<int>(float(filter_width) / 2.0f);
 	int A = 1;
 	g_na[center_point] = 1 / float(8 * A*A);
@@ -203,26 +204,26 @@ void Loadprojection::load_images() {
 			if (index_right < filter_width) { g_na[index_right] = -1 / (2 * float(ni*ni*A*A)*pi*pi); }
 		}
 	}
- 
-// окно Хамминга 
-	 for (int ni = 0; ni < filter_width ; ni++) {
-		 h_ann[ni] = 0.54f - 0.46f*cos(2.0f*pi*float(ni) / float(filter_width - 1));
-	 }
 
-// заполняем 1D фильтром 2D матрицу
+	// окно Хамминга 
+	for (int ni = 0; ni < filter_width; ni++) {
+		h_ann[ni] = 0.54f - 0.46f*cos(2.0f*pi*float(ni) / float(filter_width - 1));
+	}
+
+	// заполняем 1D фильтром 2D матрицу
 	for (int ck = 0; ck < h_detector; ck++) {
 		for (int ci = 0; ci < w_detector*times_n; ci++) {
-			gna_filter.at<float>(h_detector - 1 - ck, w_detector*times_n - 1 - ci) 
+			gna_filter.at<float>(h_detector - 1 - ck, w_detector*times_n - 1 - ci)
 				= g_na[w_detector*times_n - 1 - ci];
-			hann_filter.at<float>(h_detector - 1 - ck, w_detector*times_n - 1 - ci) 
+			hann_filter.at<float>(h_detector - 1 - ck, w_detector*times_n - 1 - ci)
 				= h_ann[w_detector*times_n - 1 - ci];
 		}
 	}
 
-// переводим наш фильтр в пространство частот
+	// переводим наш фильтр в пространство частот
 	Mat gna_fft = compute_rowDFT(gna_filter);
-// делаем двухслойным для перемножения на двухслойный комплексный gna_fft
-// чтобы перемножить на gna_fft поэлементно, так как hann_filter сугубо действительный
+	// делаем двухслойным для перемножения на двухслойный комплексный gna_fft
+	// чтобы перемножить на gna_fft поэлементно, так как hann_filter сугубо действительный
 	hann_filter = swapLR(hann_filter);
 	Mat two_hann[] = { Mat::zeros(hann_filter.size(), CV_32F), Mat::zeros(hann_filter.size(), CV_32F) };
 	two_hann[0] = hann_filter;
@@ -230,8 +231,8 @@ void Loadprojection::load_images() {
 	Mat ha_nn;
 	merge(two_hann, 2, ha_nn);
 	gna_fft = gna_fft.mul(ha_nn);
-	 
-// фактор нормирующий изначальную проекцию, см. отчет
+
+	// фактор нормирующий изначальную проекцию, см. отчет
 	Mat Dna = cv::Mat(h_detector, w_detector, CV_32FC1, Scalar::all(0));
 	float dist_to_screen = float(-y_source + y_detector);
 	for (int ck = 0; ck < h_detector; ck++) {
@@ -244,9 +245,9 @@ void Loadprojection::load_images() {
 	}
 
 	string extensio_n = ".png";
-//	string extensio_n = ".tif";
+	//	string extensio_n = ".tif";
 
-// Вычисления шага поворота пары источник-детектор
+	// Вычисления шага поворота пары источник-детектор
 	float degree_step;
 	if (projections_number == 1) {
 		// любое значение отличное от нуля, чтобы цикл выполнялся один раз, для одной проекции
@@ -262,14 +263,14 @@ void Loadprojection::load_images() {
 		}
 		else { view_angle = d_egree * pi / 180; }
 
-// вычисляем тригонометрический функции углов поворота за пределами циклов
+		// вычисляем тригонометрический функции углов поворота за пределами циклов
 		float sin_view_angle = sin(view_angle);
 		float cos_view_angle = cos(view_angle);
 
-// фактор нормирующий модифицированную проекцию, см. отчет
+		// фактор нормирующий модифицированную проекцию, см. отчет
 		Mat U2 = cv::Mat(slice_size, slice_size, CV_32FC1, Scalar::all(0));
 		// calculate U2 weighting
-		#pragma omp parallel for
+#pragma omp parallel for
 		for (int x_t = 0; x_t < slice_size; x_t++) {
 			for (int y_t = 0; y_t < slice_size; y_t++) {
 				U2.at<float>(x_t, y_t) =
@@ -278,16 +279,16 @@ void Loadprojection::load_images() {
 			}
 		}
 
-// Восстанавливаемое сечение или FOV
+		// Восстанавливаемое сечение или FOV
 		Mat slice = cv::Mat(slice_size, slice_size, CV_32FC1, Scalar::all(0));
 
 		float dist_to_screen = float(-y_source + y_detector);
 
-// Считывание и подготовка проекций для обработки
+		// Считывание и подготовка проекций для обработки
 		string counte_r = SSTR(d_egree);
 
 		string projectio_n = "projection_";
-//		string projectio_n = "RetrvdImg_";
+		//		string projectio_n = "RetrvdImg_";
 		string p_ath = read_projections_from;
 
 		string filenam_e = p_ath + projectio_n + counte_r + extensio_n;
@@ -295,22 +296,22 @@ void Loadprojection::load_images() {
 
 		IMG = imread(filenam_e, CV_LOAD_IMAGE_UNCHANGED);
 
-// Проверка наличия файла проекции
+		// Проверка наличия файла проекции
 		if (!IMG.data) {
 			cout << "Could not open or find the image" << std::endl;
 		}
 		IMG.convertTo(IMG_float, CV_32FC1);
-		
-// Переход от интенсивностей к распределению коэфицентов мю, через логарифм
+
+		// Переход от интенсивностей к распределению коэфицентов мю, через логарифм
 		IMG_float = IMG_float * 35.0f + 9e6f;
 		log(IMG_float, IMG_float);
 		cv::normalize(IMG_float, IMG_float, 0, 65535, CV_MINMAX);
 
-// Внимание zerro-padding должно применяться только к изображению,
-// чья интенсивность спадает к нулю по краям изображения
+		// Внимание zerro-padding должно применяться только к изображению,
+		// чья интенсивность спадает к нулю по краям изображения
 		IMG_float = IMG_float.mul(Tukey_filter);
 
-// Применение первого модифицирующего множителя, см.отчет		
+		// Применение первого модифицирующего множителя, см.отчет		
 		IMG_float = IMG_float.mul(Dna);
 		Mat IMG_padded;
 		if (times_n > 1) { IMG_padded = pad_zeros(IMG_float, w_detector*times_n); }
@@ -326,14 +327,56 @@ void Loadprojection::load_images() {
 		// возвращаем изображение увеличенное нулями в исходное состояние
 		if (times_n > 1) { c_onvolved = crop_zeros(c_onvolved, w_detector); }
 
-// Поворачиваем восстанавливаемый объект в обратную сторону!  см. отчет
+		// Поворачиваем восстанавливаемый объект в обратную сторону!  см. отчет
 		float c_os = cos(-view_angle);
 		float s_in = sin(-view_angle);
 		float y_source_float = float(-y_source);
 
-// Демонстрация режима маммографии (не совсем корректна с математической точки зрения)
+		// Демонстрация режима маммографии (не совсем корректна с математической точки зрения, потому что нет фильтров)
 		if ((mammo == 1) && (a_ffix == "YZ")) {
-			
+
+			float source_to_detector_center = static_cast<float>(-y_source + y_detector);
+			// в случае маммографии, старые переменные приобретают новый смысл и меняются с каждым шагом по углу
+			// возвышения источника. Также, для маммографии, нам нужны положительные углы s_in -> (-s_in)
+			// и знак их снова меняется с минуса на плюс, см. выше 19.01.2021
+			float sourcetophantom = source_to_detector_center*c_os - static_cast<float>(y_detector);
+			float sourceelevation = source_to_detector_center*(-s_in);
+			float source_to_detector = source_to_detector_center*c_os; //cosine is an even function, so the sign of angle is irrelevant
+
+			// распараллеливание процесса обратного проецирования
+			for (int Xt = t_arget - d_elta; Xt <= t_arget + d_elta; Xt++) {
+				float Xp = static_cast<float>(Xt) - half_slice;
+				if (abs((int)Xp) < y_detector) {
+#pragma omp parallel for
+					for (int Yt = 0; Yt < slice_size; Yt++) {
+						// Yt and Zt are the coordinates on the reconstructed slice
+						float Yp = static_cast<float>(Yt) - half_slice;
+						// cut the area of the slice beyond the available space limited by a detector moved immediately to the phantom
+						if (abs((int)Yp) < y_detector) {
+							int ci = static_cast<int>(Xp*source_to_detector / (sourcetophantom + Yp) + static_cast<float>(w_detector) / 2.0);
+							// ci and ck are the coordinates of the detector 
+							for (int Zt = 0; Zt < slice_size; Zt++) {
+								float Zp = static_cast<float>(Zt) - half_slice;
+								if (abs((int)Zp) < y_detector) {
+									int ck = static_cast<int>(sourceelevation - (sourceelevation - Zp)*source_to_detector / (sourcetophantom + Yp)
+										+ static_cast<float>(h_detector) / 2.0);
+
+									if ((ck >= 0) && (ck < h_detector) && (ci >= 0) && (ci < w_detector)) {
+										slice.at<float>(Zt, Yt) += c_onvolved.at<float>(h_detector - 1 - ck, w_detector - 1 - ci);
+									}
+
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// January 18, 2021. Trying to reproduce the old solution for the "YZ" mammo plane with the other planes
+
+		if ((mammo == 1) && (a_ffix == "XY") && (abs(d_egree) >= 49)) {
+
 			float source_to_detector_center = static_cast<float>(-y_source + y_detector);
 			// в случае маммографии, старые переменные приобретают новый смысл и меняются с каждым шагом по углу
 			// возвышения источника. Также, для маммографии, нам нужны положительные углы s_in -> (-s_in)
@@ -341,75 +384,83 @@ void Loadprojection::load_images() {
 			float sourceelevation = source_to_detector_center*(-s_in);
 			float source_to_detector = source_to_detector_center*cos(view_angle);
 
-			// распараллеливание процесса обратного проецирования
-			for (int Xt = t_arget - d_elta; Xt <= t_arget + d_elta; Xt++) {
-				float Xp = static_cast<float>(Xt) - half_slice;
-
-#pragma omp parallel for
-				for (int Yt = 0; Yt < slice_size; Yt++) {
-					float Yp = static_cast<float>(Yt) - half_slice;
-					int ci = static_cast<int>(Xp*source_to_detector / (sourcetophantom + Yp) + static_cast<float>(w_detector) / 2.0);
-
-					for (int Zt = 0; Zt < slice_size; Zt++) {
-						float Zp = static_cast<float>(Zt) - half_slice;
-						int ck = static_cast<int>(sourceelevation-(sourceelevation-Zp)*source_to_detector / (sourcetophantom + Yp)
-						                                  + static_cast<float>(h_detector) / 2.0 );
-
-						if ((ck >= 0) && (ck < h_detector) && (ci >= 0) && (ci < w_detector)) {
-							slice.at<float>(Zt, Yt) += c_onvolved.at<float>(h_detector - 1 - ck, w_detector - 1 - ci);
-						}
-
-					}
-				}
-			}
-		}
-
-// January 18, 2021. Clone old solution for the "YZ" plane to the other planes
-
-		if ((mammo == 1) && (a_ffix == "XY")) {
-
-			float source_to_detector_center = static_cast<float>(-y_source + y_detector);
-			// в случае маммографии, старые переменные приобретают новый смысл и меняются с каждым шагом по углу
-			
-			// January 18, 2021 Угол теперь соответствует движению источника по дуге вокруг объекта
-			// January 18, 2021 ... может тогда не нужно обращать знак минус у синуса и косинуса? см. ниже))
-			
-			// возвышения источника. Также, для маммографии, нам нужны положительные углы s_in -> (-s_in)
-			float sourcetophantom = source_to_detector_center*c_os - static_cast<float>(y_detector);
-			float sourceelevation = source_to_detector_center*(-s_in);
-			float source_to_detector = source_to_detector_center*cos(view_angle);
-
-			// распараллеливание процесса обратного проецирования
-			for (int Xt = t_arget - d_elta; Xt <= t_arget + d_elta; Xt++) {
-				float Xp = static_cast<float>(Xt) - half_slice;
-
-#pragma omp parallel for
-				for (int Yt = 0; Yt < slice_size; Yt++) {
-					float Yp = static_cast<float>(Yt) - half_slice;
-					int ci = static_cast<int>(Xp*source_to_detector / (sourcetophantom + Yp) + static_cast<float>(w_detector) / 2.0);
-
-					for (int Zt = 0; Zt < slice_size; Zt++) {
-						float Zp = static_cast<float>(Zt) - half_slice;
-						int ck = static_cast<int>(sourceelevation - (sourceelevation - Zp)*source_to_detector / (sourcetophantom + Yp)
-							+ static_cast<float>(h_detector) / 2.0);
-
-						if ((ck >= 0) && (ck < h_detector) && (ci >= 0) && (ci < w_detector)) {
-							slice.at<float>(Zt, Yt) += c_onvolved.at<float>(h_detector - 1 - ck, w_detector - 1 - ci);
-						}
-
-					}
-				}
-			}
-		}
-
-// для трех различных типов проекций используем свой блок комманд
-// ограничивающих выборку координат X,Y,Z с их переводом в координаты
-// проецируемых пикселей ci и ck рентгеновских проекций
-		if ((mammo==0)&&(a_ffix == "XY")) {
 
 			for (int Zt = t_arget - d_elta; Zt <= t_arget + d_elta; Zt++) {
 				float Zp = static_cast<float>(Zt - half_slice);
-// распараллеливание процесса обратного проецирования
+				if (abs((int)Zp) < y_detector) {
+					// распараллеливание процесса обратного проецирования
+#pragma omp parallel for
+					for (int Xt = 0; Xt < slice_size; Xt++) {
+						float Xp = static_cast<float>(Xt) - half_slice;
+						if (abs((int)Xp) < y_detector) {
+							for (int Yt = 0; Yt < slice_size; Yt++) {
+								float Yp = static_cast<float>(Yt) - half_slice;
+								// cut the area of the slice beyond the available space limited by a detector moved immediately to the phantom
+								if (abs((int)Yp) < y_detector) {
+									int ci = static_cast<int>(Xp*source_to_detector / (sourcetophantom + Yp)
+										+ static_cast<float>(w_detector) / 2.0);
+									int ck = static_cast<int>(sourceelevation - (sourceelevation - Zp)*source_to_detector / (sourcetophantom + Yp)
+										+ static_cast<float>(h_detector) / 2.0);
+
+									if ((ck >= 0) && (ck < h_detector) && (ci >= 0) && (ci < w_detector)) {
+										slice.at<float>(Xt, Yt) += c_onvolved.at<float>(h_detector - 1 - ck, w_detector - 1 - ci);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			// Для сечения параллельного плоскости XY, модифицирующий фактор можно вынести за циклы
+			//slice = slice.mul(U2);
+		}
+
+		if ((mammo == 1) && (a_ffix == "ZX")) {
+
+			float source_to_detector_center = static_cast<float>(-y_source + y_detector);
+			float sourcetophantom = source_to_detector_center*c_os - static_cast<float>(y_detector);
+			float sourceelevation = source_to_detector_center*(-s_in);
+			float source_to_detector = source_to_detector_center*cos(view_angle);
+
+			for (int Yt = t_arget - d_elta; Yt <= t_arget + d_elta; Yt++) {
+				float Yp = static_cast<float>(Yt) - half_slice;
+				// cut the area of the slice beyond the available space limited by a detector moved immediately to the phantom
+				if (abs((int)Yp) < 120) {
+
+#pragma omp parallel for
+					for (int Xt = 0; Xt < slice_size; Xt++) {
+						float Xp = static_cast<float>(Xt) - half_slice;
+						if (abs((int)Xp) < 120) {
+							int ci = static_cast<int>(Xp*source_to_detector / (sourcetophantom + Yp)
+								+ static_cast<float>(w_detector) / 2.0);
+
+							for (int Zt = 0; Zt < slice_size; Zt++) {
+								float Zp = static_cast<float>(Zt) - half_slice;
+								if (abs((int)Zp) < 120) {
+									int ck = static_cast<int>(sourceelevation - (sourceelevation - Zp)*source_to_detector / (sourcetophantom + Yp)
+										+ static_cast<float>(h_detector) / 2.0);
+
+									if ((ck >= 0) && (ck < h_detector) && (ci >= 0) && (ci < w_detector)) {
+										slice.at<float>(Zt, Xt) += (c_onvolved.at<float>(h_detector - 1 - ck, w_detector - 1 - ci));
+									}
+
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+		// для трех различных типов проекций используем свой блок комманд
+		// ограничивающих выборку координат X,Y,Z с их переводом в координаты
+		// проецируемых пикселей ci и ck рентгеновских проекций
+		if ((mammo == 0) && (a_ffix == "XY")) {
+
+			for (int Zt = t_arget - d_elta; Zt <= t_arget + d_elta; Zt++) {
+				float Zp = static_cast<float>(Zt - half_slice);
+				// распараллеливание процесса обратного проецирования
 #pragma omp parallel for
 				for (int Xt = 0; Xt < slice_size; Xt++) {
 					float Xt_cos = static_cast<float>(Xt - half_slice)*c_os;
@@ -428,15 +479,15 @@ void Loadprojection::load_images() {
 						if ((ck >= 0) && (ck < h_detector) && (ci >= 0) && (ci < w_detector)) {
 							slice.at<float>(Xt, Yt) += c_onvolved.at<float>(h_detector - 1 - ck, w_detector - 1 - ci);
 						}
-					
-						
+
+
 					}
 				}
 			}
-// Для сечения параллельного плоскости XY, модифицирующий фактор можно вынести за циклы
+			// Для сечения параллельного плоскости XY, модифицирующий фактор можно вынести за циклы
 			slice = slice.mul(U2);
 		}
-// все то же самое но для других перепендикулярных сечений
+		// все то же самое но для других перепендикулярных сечений
 		if ((mammo == 0) && (a_ffix == "YZ")) {
 
 			for (int Xt = t_arget - d_elta; Xt <= t_arget + d_elta; Xt++) {
@@ -445,16 +496,19 @@ void Loadprojection::load_images() {
 #pragma omp parallel for
 				for (int Yt = 0; Yt < slice_size; Yt++) {
 					float Y_t = static_cast<float>(Yt - half_slice);
-
+					// from rotated to fixed frame or vice versa
 					float Xp = Xt_cos - Y_t*s_in;
 					float Yp = Xt_sin + Y_t*c_os;
 
-					int ci = static_cast<int>(Xp*dist_to_screen / (y_source_float + Yp) + static_cast<float>(w_detector) / 2.0);
+					float r_atio = dist_to_screen / (y_source_float + Yp);
+
+					int ci = static_cast<int>(Xp*r_atio + static_cast<float>(w_detector) / 2.0);
 
 					for (int Zt = 0; Zt < slice_size; Zt++) {
 
 						float Zp = static_cast<float>(Zt - half_slice);
-						int ck = static_cast<int>(Zp*dist_to_screen / (y_source_float + Yp) + static_cast<float>(h_detector) / 2.0);
+						int ck = static_cast<int>(Zp*r_atio
+							+ static_cast<float>(h_detector) / 2.0);
 
 						//check backward readout once more time
 						if ((ck >= 0) && (ck < h_detector) && (ci >= 0) && (ci < w_detector)) {
@@ -466,7 +520,7 @@ void Loadprojection::load_images() {
 			}
 
 		}
-	
+
 		if ((mammo == 0) && (a_ffix == "ZX")) {
 
 			for (int Yt = t_arget - d_elta; Yt <= t_arget + d_elta; Yt++) {
@@ -479,14 +533,16 @@ void Loadprojection::load_images() {
 					float Xp = X_t*c_os - Yt_sin;
 					float Yp = X_t*s_in + Yt_cos;
 
-					int ci = static_cast<int>(Xp*dist_to_screen / (y_source_float + Yp) + static_cast<float>(w_detector) / 2.0);
+					float r_atio = dist_to_screen / (y_source_float + Yp);
+
+					int ci = static_cast<int>(Xp*r_atio + static_cast<float>(w_detector) / 2.0);
 
 					for (int Zt = 0; Zt < slice_size; Zt++) {
 
 						float Zp = static_cast<float>(Zt - half_slice);
-						int ck = static_cast<int>(Zp*dist_to_screen / (y_source_float + Yp) + static_cast<float>(h_detector) / 2.0);
+						int ck = static_cast<int>(Zp*r_atio + static_cast<float>(h_detector) / 2.0);
 
-				
+
 						if ((ck >= 0) && (ck < h_detector) && (ci >= 0) && (ci < w_detector)) {
 							slice.at<float>(Zt, Xt) += (c_onvolved.at<float>(h_detector - 1 - ck, w_detector - 1 - ci)*U2.at<float>(Xt, Yt));
 						}
@@ -496,26 +552,26 @@ void Loadprojection::load_images() {
 			}
 		}
 
-// Складываем информацию от каждой проекции в общий файл
+		// Складываем информацию от каждой проекции в общий файл
 		slice_all = slice_all + slice;
 
 		cv::normalize(slice_all, slice_normalized, 0, 65535, CV_MINMAX, CV_16UC1);
 		cv::namedWindow(a_ffix, WINDOW_NORMAL);
 		cv::imshow(a_ffix, slice_normalized);
 		cv::waitKey(1);
-}
+	}
 
-// создание и применение маски М для удаления фона изоборажения
+	// создание и применение маски М для удаления фона изоборажения
 	double min, max;
 	cv::minMaxLoc(slice_all, &min, &max);
-	min = min*(1.0f-cut_background);
+	min = min*(1.0f - cut_background);
 	min = 400.0;
 	Mat M_ask;
-	inRange(slice_all,min, max, M_ask);
+	inRange(slice_all, min, max, M_ask);
 	M_ask.convertTo(M_ask, CV_32FC1, 1.f / 255);
-//	slice_all=slice_all.mul(M_ask);
-//	slice_all = slice_all / 3000.0 * 0.2;
-//	slice_all.setTo(1.0, slice_all > .7);
+	//	slice_all=slice_all.mul(M_ask);
+	//	slice_all = slice_all / 3000.0 * 0.2;
+	//	slice_all.setTo(1.0, slice_all > .7);
 
 	cv::normalize(slice_all, slice_normalized, 0, 65535, CV_MINMAX, CV_16UC1);
 
@@ -535,7 +591,7 @@ void Loadprojection::load_images() {
 	dtime = omp_get_wtime() - dtime;
 	std::printf("elapsed build time in seconds = %f\n\n", dtime);
 	cv::imshow(a_ffix, slice_normalized);
-	cv::waitKey(1);
+	cv::waitKey(0);
 
 	delete[]g_na;
 	delete[]h_ann;
