@@ -838,18 +838,18 @@ int main() {
 	if (mammography_yes == 1) {
 	    // режим мамографии. Детектор вплотную придвинут к фантому и источник двигается по дуге окружности
 		phantom_to_detector = static_cast<int>(depth / 2.0f) + 1; // move one voxel further from the detector
-		cout << "\nThe phantom.to.detector value is set to 1/2 (half) of the phantom.depth" << phantom_to_detector << "\n";
+		cout << "\nThe phantom.to.detector value is set to 1/2 (half) of the phantom.depth, that is to " << phantom_to_detector << "\n";
 	}
 		// процедура обратного проецирования проекций по заданым парметрам в input_file.txt
 		cout << "\nproceeding to the supplied projections files ...\n";
-		//for (int tcs = 190; tcs <= 200;tcs+=1) {
-		//	target_cross_section=tcs;
+		for (int tcs = 1; tcs <= 256;tcs+=1) {
+			target_cross_section=tcs;
 			Loadprojection reconstruct_slice(-source_to_phantom, phantom_to_detector, detector_width, detector_height,
 				start_angle, end_angle,
 				F_OV, slice_plane, target_cross_section, slice_half_thickness, zero_padding_factor, cut_background, tukey_window_alpha,
 				projections_number, projections_dir, mammography_yes);
 			reconstruct_slice.load_images();
-		//}
+		}
 
 		std::cout << "done!\n";
 	}

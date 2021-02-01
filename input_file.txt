@@ -14,10 +14,10 @@ source.to.phantom:2000
 source.elevation:0
 phantom.to.detector:129000999
 
-field.of.view:512
-slice.plane:ZX
-target.cross.section:320
-slice.half.thickness:5
+field.of.view:256
+slice.plane:YZ
+target.cross.section:300
+slice.half.thickness:0
 zero.padding.factor:0
 cut.background:0.0
 tukey.window.alpha:0.0

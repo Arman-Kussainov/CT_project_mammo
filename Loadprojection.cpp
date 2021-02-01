@@ -578,20 +578,20 @@ void Loadprojection::load_images() {
 	//	обработка исходного изображения и запись на диск
 	string n_ame = "_2018_Dna_U2_";
 	//string pat_h = "C:\\Users\\Martha\\Desktop\\slices\\";
-	string pat_h = "C:\\";
+	string pat_h = "C:\\Users\\Martha\\Desktop\\mammo_data\\";
 	//string pat_h = "";
 	string c_ounter = SSTR(t_arget);
 	string time_stamp = SSTR(round(omp_get_wtime()));
 	string rotation_s = SSTR(projections_number);
 	string slic_e = SSTR(slice_size);
-	//string filenam_e = pat_h + rotation_s + "_" + a_ffix +n_ame + c_ounter +"_"+slic_e + "_"+time_stamp+ extensio_n;
-	string filenam_e = pat_h + c_ounter + "_" + a_ffix + n_ame + rotation_s + "_" + slic_e + "_" + time_stamp + extensio_n;
+	string filenam_e = pat_h + c_ounter +"_"+rotation_s + "_" + a_ffix + "_"+slic_e + extensio_n;
+	//string filenam_e = pat_h + c_ounter + "_" + a_ffix + n_ame + rotation_s + "_" + slic_e + "_" + time_stamp + extensio_n;
 	cv::imwrite(filenam_e, slice_normalized, compression_params);
 
 	dtime = omp_get_wtime() - dtime;
 	std::printf("elapsed build time in seconds = %f\n\n", dtime);
 	cv::imshow(a_ffix, slice_normalized);
-	cv::waitKey(0);
+	cv::waitKey(1);
 
 	delete[]g_na;
 	delete[]h_ann;
