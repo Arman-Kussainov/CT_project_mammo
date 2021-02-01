@@ -15,8 +15,8 @@ source.elevation:0
 phantom.to.detector:129000999
 
 field.of.view:256
-slice.plane:YZ
-target.cross.section:300
+slice.plane:XY
+target.cross.section:128
 slice.half.thickness:0
 zero.padding.factor:0
 cut.background:0.0

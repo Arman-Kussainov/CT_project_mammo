@@ -591,7 +591,7 @@ void Loadprojection::load_images() {
 	dtime = omp_get_wtime() - dtime;
 	std::printf("elapsed build time in seconds = %f\n\n", dtime);
 	cv::imshow(a_ffix, slice_normalized);
-	cv::waitKey(1);
+	cv::waitKey(0);
 
 	delete[]g_na;
 	delete[]h_ann;
