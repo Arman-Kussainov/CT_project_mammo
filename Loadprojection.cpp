@@ -375,7 +375,7 @@ void Loadprojection::load_images() {
 
 		// January 18, 2021. Trying to reproduce the old solution for the "YZ" mammo plane with the other planes
 
-		if ((mammo == 1) && (a_ffix == "XY") && (abs(d_egree) >= 49)) {
+		if ((mammo == 1) && (a_ffix == "XY")) {
 
 			float source_to_detector_center = static_cast<float>(-y_source + y_detector);
 			// в случае маммографии, старые переменные приобретают новый смысл и меняются с каждым шагом по углу
@@ -425,18 +425,18 @@ void Loadprojection::load_images() {
 			for (int Yt = t_arget - d_elta; Yt <= t_arget + d_elta; Yt++) {
 				float Yp = static_cast<float>(Yt) - half_slice;
 				// cut the area of the slice beyond the available space limited by a detector moved immediately to the phantom
-				if (abs((int)Yp) < 120) {
+				//if (abs((int)Yp) < 120) {
 
 #pragma omp parallel for
 					for (int Xt = 0; Xt < slice_size; Xt++) {
 						float Xp = static_cast<float>(Xt) - half_slice;
-						if (abs((int)Xp) < 120) {
+						//if (abs((int)Xp) < 120) {
 							int ci = static_cast<int>(Xp*source_to_detector / (sourcetophantom + Yp)
 								+ static_cast<float>(w_detector) / 2.0);
 
 							for (int Zt = 0; Zt < slice_size; Zt++) {
 								float Zp = static_cast<float>(Zt) - half_slice;
-								if (abs((int)Zp) < 120) {
+								//if (abs((int)Zp) < 120) {
 									int ck = static_cast<int>(sourceelevation - (sourceelevation - Zp)*source_to_detector / (sourcetophantom + Yp)
 										+ static_cast<float>(h_detector) / 2.0);
 
@@ -444,11 +444,11 @@ void Loadprojection::load_images() {
 										slice.at<float>(Zt, Xt) += (c_onvolved.at<float>(h_detector - 1 - ck, w_detector - 1 - ci));
 									}
 
-								}
+								//}
 							}
-						}
+						//}
 					}
-				}
+				//}
 			}
 		}
 
