@@ -1,9 +1,9 @@
 path.mu.data:Attenuation coefficients\\NIST compounds\\
 path.spectrum.data:100kV.txt
-path.projection.data:C:\\CT_project\\mammography3\\
+path.projection.data:C:\\CT_project\\projections4\\
 
-mammography.yes
-projections.no
+mammography.no
+projections.yes
 
 element.id:Vacuum.0
 element.id:Air, Dry.1
@@ -14,9 +14,9 @@ source.to.phantom:2000
 source.elevation:0
 phantom.to.detector:1040
 
-field.of.view:1024
-slice.plane:ZX
-target.cross.section:512
+field.of.view:512
+slice.plane:YZ
+target.cross.section:256
 slice.half.thickness:10
 zero.padding.factor:0
 cut.background:0.0
@@ -25,9 +25,9 @@ tukey.window.alpha:0.0
 detector.width:1024
 detector.height:1024
 
-start.angle:-58 // from lesser number to bigger one
-end.angle:58
-projections.number:117
+start.angle:0 // from lesser number to bigger one
+end.angle:364
+projections.number:365
 image.compression:9
 
 voxels.per.cm:72
@@ -39,7 +39,7 @@ gauss.noise.mean:0
 gauss.noise.sigma:5
 
 phantom.width:512
-phantom.depth:512
+phantom.depth:256
 phantom.height:512
 
 phantom.id:1
@@ -55,20 +55,20 @@ voids.quantity:0
 voids.id:0
 
 object.shape:0 
- object.x:256 
- object.y:0
+ object.x:512 
+ object.y:128
  object.z:256 
-object.width:256
-object.depth:512
-object.height:256
+object.width:1024
+object.depth:256
+object.height:512
  object.alpha:0
  object.beta:0
  object.gamma:0
 object.id:2
 
 object.shape:0 
- object.x:256 
- object.y:0
+ object.x:512 
+ object.y:128
  object.z:256 
 object.width:128
 object.depth:128
@@ -79,8 +79,8 @@ object.height:128
 object.id:1
 
 object.shape:0 
- object.x:256 
- object.y:96
+ object.x:416 
+ object.y:128
  object.z:256 
 object.width:64
 object.depth:64
@@ -91,8 +91,8 @@ object.height:64
 object.id:1
 
 object.shape:0 
- object.x:256 
- object.y:144
+ object.x:368 
+ object.y:128
  object.z:256 
 object.width:32
 object.depth:32
@@ -103,8 +103,8 @@ object.height:32
 object.id:1
 
 object.shape:0 
- object.x:256 
- object.y:168
+ object.x:344 
+ object.y:128
  object.z:256 
 object.width:16
 object.depth:16
@@ -115,8 +115,8 @@ object.height:16
 object.id:1
 
 object.shape:0 
- object.x:256 
- object.y:180
+ object.x:332 
+ object.y:128
  object.z:256 
 object.width:8
 object.depth:8
@@ -127,8 +127,8 @@ object.height:8
 object.id:1
 
 object.shape:0 
- object.x:256 
- object.y:186
+ object.x:326 
+ object.y:128
  object.z:256 
 object.width:4
 object.depth:4
