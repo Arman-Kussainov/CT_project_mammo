@@ -346,18 +346,18 @@ void Loadprojection::load_images() {
 			// распараллеливание процесса обратного проецирования
 			for (int Xt = t_arget - d_elta; Xt <= t_arget + d_elta; Xt++) {
 				float Xp = static_cast<float>(Xt) - half_slice;
-				if (abs((int)Xp) < y_detector) {
+				//if (abs((int)Xp) < y_detector) {
 #pragma omp parallel for
 					for (int Yt = 0; Yt < slice_size; Yt++) {
 						// Yt and Zt are the coordinates on the reconstructed slice
 						float Yp = static_cast<float>(Yt) - half_slice;
 						// cut the area of the slice beyond the available space limited by a detector moved immediately to the phantom
-						if (abs((int)Yp) < y_detector) {
+						//if (abs((int)Yp) < y_detector) {
 							int ci = static_cast<int>(Xp*source_to_detector / (sourcetophantom + Yp) + static_cast<float>(w_detector) / 2.0);
 							// ci and ck are the coordinates of the detector 
 							for (int Zt = 0; Zt < slice_size; Zt++) {
 								float Zp = static_cast<float>(Zt) - half_slice;
-								if (abs((int)Zp) < y_detector) {
+								//if (abs((int)Zp) < y_detector) {
 									int ck = static_cast<int>(sourceelevation - (sourceelevation - Zp)*source_to_detector / (sourcetophantom + Yp)
 										+ static_cast<float>(h_detector) / 2.0);
 
@@ -365,11 +365,11 @@ void Loadprojection::load_images() {
 										slice.at<float>(Zt, Yt) += c_onvolved.at<float>(h_detector - 1 - ck, w_detector - 1 - ci);
 									}
 
-								}
+								//}
 							}
-						}
+						//}
 					}
-				}
+				//}
 			}
 		}
 
@@ -387,16 +387,16 @@ void Loadprojection::load_images() {
 
 			for (int Zt = t_arget - d_elta; Zt <= t_arget + d_elta; Zt++) {
 				float Zp = static_cast<float>(Zt - half_slice);
-				if (abs((int)Zp) < y_detector) {
+				//if (abs((int)Zp) < y_detector) {
 					// распараллеливание процесса обратного проецирования
 #pragma omp parallel for
 					for (int Xt = 0; Xt < slice_size; Xt++) {
 						float Xp = static_cast<float>(Xt) - half_slice;
-						if (abs((int)Xp) < y_detector) {
+						//if (abs((int)Xp) < y_detector) {
 							for (int Yt = 0; Yt < slice_size; Yt++) {
 								float Yp = static_cast<float>(Yt) - half_slice;
 								// cut the area of the slice beyond the available space limited by a detector moved immediately to the phantom
-								if (abs((int)Yp) < y_detector) {
+								//if (abs((int)Yp) < y_detector) {
 									int ci = static_cast<int>(Xp*source_to_detector / (sourcetophantom + Yp)
 										+ static_cast<float>(w_detector) / 2.0);
 									int ck = static_cast<int>(sourceelevation - (sourceelevation - Zp)*source_to_detector / (sourcetophantom + Yp)
@@ -405,11 +405,11 @@ void Loadprojection::load_images() {
 									if ((ck >= 0) && (ck < h_detector) && (ci >= 0) && (ci < w_detector)) {
 										slice.at<float>(Xt, Yt) += c_onvolved.at<float>(h_detector - 1 - ck, w_detector - 1 - ci);
 									}
-								}
+								//}
 							}
-						}
+						//}
 					}
-				}
+				//}
 			}
 			// Для сечения параллельного плоскости XY, модифицирующий фактор можно вынести за циклы
 			//slice = slice.mul(U2);

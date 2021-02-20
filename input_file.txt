@@ -1,9 +1,9 @@
 path.mu.data:Attenuation coefficients\\NIST compounds\\
 path.spectrum.data:100kV.txt
-path.projection.data:C:\\CT_project\\projections4\\
+path.projection.data:C:\\CT_project\\mammography4\\
 
-mammography.no
-projections.yes
+mammography.yes
+projections.no
 
 element.id:Vacuum.0
 element.id:Air, Dry.1
@@ -15,9 +15,9 @@ source.elevation:0
 phantom.to.detector:1040
 
 field.of.view:512
-slice.plane:YZ
+slice.plane:ZX
 target.cross.section:256
-slice.half.thickness:10
+slice.half.thickness:500
 zero.padding.factor:0
 cut.background:0.0
 tukey.window.alpha:0.0
@@ -25,9 +25,9 @@ tukey.window.alpha:0.0
 detector.width:1024
 detector.height:1024
 
-start.angle:0 // from lesser number to bigger one
-end.angle:364
-projections.number:365
+start.angle:-89 // from lesser number to bigger one
+end.angle:89
+projections.number:179
 image.compression:9
 
 voxels.per.cm:72
